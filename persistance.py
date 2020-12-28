@@ -1,6 +1,6 @@
 import random
 from replit import db
-from exceptions import SummonerAlreadyInDb, ForbiddenWordAlreadyInDb
+from exceptions import SummonerAlreadyInDb, ForbiddenWordAlreadyInDb, SummonerNotInDb
 
 SUMMONERS_DB_KEY = 'summoners'
 FORBIDDEN_DB_KEY = 'forbidden'
@@ -41,5 +41,23 @@ def add_summoner(summoner_name, summoner_info):
     if summoner_name in summoners.keys():
       raise SummonerAlreadyInDb
     summoners[summoner_name] = summoner_info
+    print(f'summoner {summoner_name} added ')
+    db[SUMMONERS_DB_KEY] = summoners
   else:
     db[SUMMONERS_DB_KEY] = {summoner_name:summoner_info}
+
+def delete_summoner(summoner_name):
+  print('delete_summoner', summoner_name)
+  if SUMMONERS_DB_KEY in db.keys():
+    summoners = db[SUMMONERS_DB_KEY]
+    if summoner_name in summoners.keys():
+      del summoners[summoner_name]
+      db[SUMMONERS_DB_KEY] = summoners
+    else:
+      raise SummonerNotInDb
+
+def get_summoners():
+  if SUMMONERS_DB_KEY in db.keys():
+    return db[SUMMONERS_DB_KEY]
+  else:
+    return {}
